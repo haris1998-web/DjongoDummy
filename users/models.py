@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-# from django.db import models
 from djongo import models
+from datetime import datetime
 
 
 class UserManager(BaseUserManager):
@@ -13,6 +13,7 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.is_active = True
+        user.last_login = datetime.now()
         user.save(using=self._db)
         return user
 
