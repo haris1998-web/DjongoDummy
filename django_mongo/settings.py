@@ -1,9 +1,8 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -31,7 +30,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
     'graphene_django',
     'users'
 ]
@@ -55,6 +54,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+]
+
+GRAPHENE = {
+    "SCHEMA": "schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = 'django_mongo.urls'
@@ -77,7 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_mongo.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -85,30 +96,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'college',
-    }
-}
-
-
-GRAPHENE = {
-    "SCHEMA": "django_mongo.schema.schema",
-    "MIDDLEWARE": [
-        "graphql_jwt.middleware.JSONWebTokenMiddleware",
-    ],
-}
-
-GRAPHQL_AUTH = {
-    'SEND_ACTIVATION_EMAIL': False,
-    'EMAIL_FROM': 'no-reply@comundo.io',
-    'LOGIN_ALLOWED_FIELDS': ['email'],
-    'UPDATE_MUTATION_FIELDS': ['name'],
-    'REGISTER_MUTATION_FIELDS': ['email', 'name', ],
-    'USER_NODE_FILTER_FIELDS': {
-        "email": ["exact"],
-        "is_active": ["exact"],
-        "status__archived": ["exact"],
-        "status__verified": ["exact"],
-        "status__secondary_email": ["exact"],
-    }
+        'ENFORCE_SCHEMA': False
+    },
 }
 
 GRAPHQL_JWT = {
@@ -129,11 +118,6 @@ GRAPHQL_JWT = {
     'JWT_LONG_RUNNING_REFRESH_TOKEN': True,
 }
 
-AUTHENTICATION_BACKENDS = [
-    "graphql_jwt.backends.JSONWebTokenBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -151,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     # },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
